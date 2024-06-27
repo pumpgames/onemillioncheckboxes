@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Hundred Thousand Checkboxes</title>
+    <title>One Million Checkboxes</title>
     <style>
         .grid {
             display: grid;
@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <h1>One Hundred Thousand Checkboxes</h1>
+    <h1>One Million Checkboxes</h1>
     <p>(checking a box checks it for everyone!)</p>
     <p>a website by <a href="https://x.com/pumpgames777">pumpgames</a> ✉ $</p>
     <p id="boxesChecked">0 boxes are ✓</p>
@@ -39,9 +39,9 @@
         const userCheckedElement = document.getElementById('userChecked');
         let totalChecked = 0;
         let userChecked = 0;
-        const totalBoxes = 100000;
-        const visibleRows = 20;
-        const boxesPerRow = 16;
+        const totalBoxes = 1000000;
+        const visibleRows = 400;
+        const boxesPerRow = 10;
         let startIndex = 0;
         let checkboxStates = new Array(totalBoxes).fill(false);
 
