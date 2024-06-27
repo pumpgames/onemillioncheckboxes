@@ -19,9 +19,9 @@
 <body>
     <h1>One Million Checkboxes</h1>
     <p>(checking a box checks it for everyone!)</p>
-    <p>a website by eieio ✉ $</p>
+    <p>a website by <a href="https://x.com/pumpgames777">pumpgames</a> ✉ $</p>
     <p id="boxesChecked">0 boxes are ✓</p>
-    <p>You have checked 0 boxes</p>
+    <p id="userChecked">You have checked 0 boxes</p>
     
     <div class="grid" id="checkboxGrid">
         <!-- Checkboxes will be inserted here by JavaScript -->
@@ -29,12 +29,32 @@
 
     <script>
         const grid = document.getElementById('checkboxGrid');
+        const boxesCheckedElement = document.getElementById('boxesChecked');
+        const userCheckedElement = document.getElementById('userChecked');
+        let totalChecked = 0;
+        let userChecked = 0;
+
         for (let i = 0; i < 1000000; i++) {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.className = 'checkbox';
             checkbox.id = `box-${i}`;
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    totalChecked++;
+                    userChecked++;
+                } else {
+                    totalChecked--;
+                    userChecked--;
+                }
+                updateCounters();
+            });
             grid.appendChild(checkbox);
+        }
+
+        function updateCounters() {
+            boxesCheckedElement.textContent = `${totalChecked} boxes are ✓`;
+            userCheckedElement.textContent = `You have checked ${userChecked} boxes`;
         }
     </script>
 </body>
