@@ -9,8 +9,14 @@
             display: grid;
             grid-template-columns: repeat(16, 1fr);
             gap: 5px;
+            height: 400px;
+            overflow-y: auto;
         }
         .checkbox {
+            width: 20px;
+            height: 20px;
+        }
+        .placeholder {
             width: 20px;
             height: 20px;
         }
@@ -33,12 +39,16 @@
         const userCheckedElement = document.getElementById('userChecked');
         let totalChecked = 0;
         let userChecked = 0;
+        const totalBoxes = 100000;
+        const visibleRows = 20;
+        const boxesPerRow = 16;
+        let startIndex = 0;
 
-        for (let i = 0; i < 1000; i++) {
+        function createCheckbox(index) {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.className = 'checkbox';
-            checkbox.id = `box-${i}`;
+            checkbox.id = `box-${index}`;
             checkbox.addEventListener('change', function() {
                 if (this.checked) {
                     totalChecked++;
@@ -49,13 +59,38 @@
                 }
                 updateCounters();
             });
-            grid.appendChild(checkbox);
+            return checkbox;
+        }
+
+        function updateVisibleBoxes() {
+            grid.innerHTML = '';
+            const endIndex = Math.min(startIndex + visibleRows * boxesPerRow, totalBoxes);
+            for (let i = startIndex; i < endIndex; i++) {
+                grid.appendChild(createCheckbox(i));
+            }
         }
 
         function updateCounters() {
             boxesCheckedElement.textContent = `${totalChecked} boxes are ✓`;
             userCheckedElement.textContent = `You have checked ${userChecked} boxes`;
         }
+
+        grid.addEventListener('scroll', () => {
+            const newStartIndex = Math.floor(grid.scrollTop / 25) * boxesPerRow;
+            if (newStartIndex !== startIndex) {
+                startIndex = newStartIndex;
+                updateVisibleBoxes();
+            }
+        });
+
+        // Initial render
+        updateVisibleBoxes();
+
+        // Add placeholder to allow scrolling
+        const placeholderHeight = Math.ceil(totalBoxes / boxesPerRow) * 25;
+        const placeholder = document.createElement('div');
+        placeholder.style.height = `${placeholderHeight}px`;
+        grid.appendChild(placeholder);
     </script>
 </body>
 </html>
