@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Million Checkboxes</title>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            gap: 5px;
+        }
+        .checkbox {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>One Million Checkboxes</h1>
+    <p>(checking a box checks it for everyone!)</p>
+    <p>a website by eieio ✉ $</p>
+    <p id="boxesChecked">0 boxes are ✓</p>
+    <p>You have checked 0 boxes</p>
+    
+    <div class="grid" id="checkboxGrid">
+        <!-- Checkboxes will be inserted here by JavaScript -->
+    </div>
+
+    <script>
+        const grid = document.getElementById('checkboxGrid');
+        for (let i = 0; i < 1000000; i++) {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'checkbox';
+            checkbox.id = `box-${i}`;
+            grid.appendChild(checkbox);
+        }
+    </script>
+</body>
+</html>
