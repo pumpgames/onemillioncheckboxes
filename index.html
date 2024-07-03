@@ -42,7 +42,7 @@
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
+            grid-template-columns: repeat(16, 1fr);
             gap: 5px;
             height: 400px;
             overflow-y: auto;
@@ -83,19 +83,24 @@
         const grid = document.getElementById('checkboxGrid');
         const boxesCheckedElement = document.getElementById('boxesChecked');
         const userCheckedElement = document.getElementById('userChecked');
-        let totalChecked = 0;
-        let userChecked = 0;
-        const totalBoxes = 1000000;
+        const totalBoxes = 1000000; // One million checkboxes
         const visibleRows = 1000;
         const boxesPerRow = 10;
         let startIndex = 0;
         let checkboxStates = new Array(totalBoxes).fill(false);
+        let millionthCheckboxReached = false;
 
-        // Randomly initialize checkboxes
-        for (let i = 0; i < totalBoxes; i++) {
-            if (Math.random() < 0.5) {
-                checkboxStates[i] = true;
-                totalChecked++;
+        // Initialize with random number of checked boxes
+        let totalChecked = Math.floor(Math.random() * totalBoxes);
+        let userChecked = 0;
+
+        function initializeRandomCheckedBoxes() {
+            for (let i = 0; i < totalChecked; i++) {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * totalBoxes);
+                } while (checkboxStates[randomIndex]);
+                checkboxStates[randomIndex] = true;
             }
         }
 
@@ -115,6 +120,7 @@
                     userChecked--;
                 }
                 updateCounters();
+                checkMillionthCheckbox();
             });
             return checkbox;
         }
@@ -132,6 +138,40 @@
             userCheckedElement.textContent = `You have checked ${userChecked} boxes`;
         }
 
+        function checkMillionthCheckbox() {
+            if (totalChecked === 1000000 && !millionthCheckboxReached) {
+                millionthCheckboxReached = true;
+                const message = prompt("Congratulations! You've checked the millionth box! Enter a message to be sent to the creator:");
+                if (message) {
+                    alert(`Thank you! Your message: "${message}" will be sent to the creator.`);
+                    // In a real-world scenario, you would send this message to a server
+                    // that would then email it to you. For example:
+                    // sendEmailToCreator(message);
+                }
+            }
+        }
+
+        function simulateComputerChecking() {
+            const checkProbability = 0.1;
+            const uncheckProbability = 0.01;
+
+            setInterval(() => {
+                for (let i = 0; i < 10; i++) {
+                    const randomIndex = Math.floor(Math.random() * totalBoxes);
+                    if (!checkboxStates[randomIndex] && Math.random() < checkProbability) {
+                        checkboxStates[randomIndex] = true;
+                        totalChecked++;
+                    } else if (checkboxStates[randomIndex] && Math.random() < uncheckProbability) {
+                        checkboxStates[randomIndex] = false;
+                        totalChecked--;
+                    }
+                }
+                updateCounters();
+                updateVisibleBoxes();
+                checkMillionthCheckbox();
+            }, 100);
+        }
+
         grid.addEventListener('scroll', () => {
             const newStartIndex = Math.floor(grid.scrollTop / 25) * boxesPerRow;
             if (newStartIndex !== startIndex) {
@@ -140,26 +180,8 @@
             }
         });
 
-        // Random checkbox toggling
-        function randomToggle() {
-            const index = Math.floor(Math.random() * totalBoxes);
-            checkboxStates[index] = !checkboxStates[index];
-            if (checkboxStates[index]) {
-                totalChecked++;
-            } else {
-                totalChecked--;
-            }
-            updateCounters();
-
-            // Update visible checkbox if it's in view
-            if (index >= startIndex && index < startIndex + visibleRows * boxesPerRow) {
-                const checkbox = document.getElementById(`box-${index}`);
-                if (checkbox) checkbox.checked = checkboxStates[index];
-            }
-        }
-
-        // Periodically toggle random checkboxes
-        setInterval(randomToggle, 1000); // Toggle a random checkbox every second
+        // Initialize random checked boxes
+        initializeRandomCheckedBoxes();
 
         // Initial render
         updateVisibleBoxes();
@@ -170,6 +192,9 @@
         const placeholder = document.createElement('div');
         placeholder.style.height = `${placeholderHeight}px`;
         grid.appendChild(placeholder);
+
+        // Start computer simulation
+        simulateComputerChecking();
     </script>
 </body>
 </html>
